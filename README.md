@@ -1,6 +1,6 @@
 # Node.js Hacker News API
 
-A Node.js library for seamless integration with [Algolia's kickass Hacker News API](https://hn.algolia.com/api). 
+A Node.js library for seamless integration with [Algolia's kickass Hacker News API](https://hn.algolia.com/api).
 
 
 ## Installation
@@ -48,12 +48,35 @@ hn.search({
 
 ## Methods
 
+
+### Callback-only
+
+* `getComments(cb)`
+* `getLastComments(cb)`;
+* `getPolls(cb)`
+* `getLastPolls(cb)`
+* `getPosts(cb)`
+* `getLastPosts(cb)`
+* `getStories(cb)`
+* `getLastStories(cb)`
+
+
+### String and callback
 * `getItem(id, cb)`
 * `getUser(username, cb)`
-* `getLastStories(cb)`
-* `getLastPolls(cb)`
-* `getLastPosts(cb)`
+* `getUserComments(username, cb)`
+* `getLastUserComments(username, cb)`
+* `getUserPolls(username, cb)`
+* `getLastUserPolls(username, cb)`
 * `getUserStories(username, cb)`
-* `searchStories(search, cb)`
-* `searchPolls(search, cb)`
+* `getLastUserStories(username, cb)`
+* `searchComments(query, cb)`
+* `searchLastComments(query, cb)`
+* `searchPosts(query, cb)
+* `searchLastPosts(query, cb)`
+* `searchStories(query, cb)`
+* `searchLastStories(query, cb)`
+
+### Object and callback
 * `search(obj, cb)`
+* `searchLast(obj, cb)`
