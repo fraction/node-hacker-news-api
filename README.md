@@ -11,7 +11,7 @@ npm install hacker-news-api
 
 ## Examples
 
-Some methods only require a callback.
+[Some methods](#Callback-only) only require a callback.
 
 ```js
 var hn = require('hacker-news-api');
@@ -22,7 +22,7 @@ hn.getLastPolls(function (error, data) {
 });
 ```
 
-Some methods require a string and a callback.
+[Some methods](#String-and-callback) require a string and a callback.
 
 ```js
 var hn = require('hacker-news-api');
@@ -33,7 +33,7 @@ hn.getUserStories('pg', function (error, data) {
 });
 ```
 
-The `api.search` method requires an object and a callback.
+[Some methods](#Object-and-callback) requires an object and a callback.
 ```js
 var hn = require('hacker-news-api');
 
@@ -49,7 +49,7 @@ hn.search({
 ## Methods
 
 
-### Callback-only
+### Callback only
 
 * `getComments(cb)`
 * `getLastComments(cb)`;
@@ -72,7 +72,7 @@ hn.search({
 * `getLastUserStories(username, cb)`
 * `searchComments(query, cb)`
 * `searchLastComments(query, cb)`
-* `searchPosts(query, cb)
+* `searchPosts(query, cb)`
 * `searchLastPosts(query, cb)`
 * `searchStories(query, cb)`
 * `searchLastStories(query, cb)`
