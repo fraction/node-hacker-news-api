@@ -27,6 +27,10 @@ api.getLastStories = function (cb) {
   api.call('search_by_date?tags=story', cb);
 }
 
+api.getLastPolls = function (cb) {
+  api.call('search_by_date?tags=poll', cb);
+}
+
 api.search
 
 api.getUser('ChristianBundy', function (error, data) {
