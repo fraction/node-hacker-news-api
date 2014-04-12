@@ -11,14 +11,14 @@ var objectToParams = function(obj) {
     }
     params += key + '=' + obj[key];
   }
-}
+};
 
 var hn = {
   // make a request to the specified endpoint
   call: function (endpoint, cb) {
     var query = 'https://hn.algolia.com/hn/v1/' + endpoint;
     request(query, function (error, response, body) {
-      if (!error && !response.statusCode == 200)
+      if (!error && response.statusCode != 200)
         error = response.statusCode;
       if (typeof body !== 'undefined')
         body = JSON.parse(body);
@@ -29,7 +29,7 @@ var hn = {
   // get most popular
   getComments: function (cb) {
     hn.call('search?tags=comment', cb);
-  }
+  },
 
   getPolls: function (cb) {
     hn.call('search?tags=poll', cb);
@@ -46,7 +46,7 @@ var hn = {
   // get most recent
   getLastComments: function (cb) {
     hn.call('search_by_date?tags=comment', cb);
-  }
+  },
 
   getLastPolls: function (cb) {
     hn.call('search_by_date?tags=poll', cb);
@@ -66,7 +66,7 @@ var hn = {
   },
 
   getUser: function (username, cb) {
-    hn.call('users/' + username, cb)
+    hn.call('users/' + username, cb);
   },
 
   // get popular user activity
