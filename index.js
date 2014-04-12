@@ -23,6 +23,12 @@ api.getUser = function (username, cb) {
   api.call('users/' + username, cb)
 }
 
+api.getLastStories = function (cb) {
+  api.call('search_by_date?tags=story', cb);
+}
+
+api.search
+
 api.getUser('ChristianBundy', function (error, data) {
   if (error)
     throw error;
