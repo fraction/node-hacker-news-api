@@ -5,16 +5,19 @@ A Node.js library for seamless integration with [Algolia's kickass Hacker News A
 
 ## Installation
 
-Impossible. Don't even try it.
+```sh
+npm install hacker-news-api
+```
 
-## Usage
+## Examples
 
 Some methods only require a callback.
 
 ```js
-api.getLastPolls(function (error, data) {
-  if (error)
-    throw error;
+var hn = require('hacker-news-api');
+
+hn.getLastPolls(function (error, data) {
+  if (error) throw error;
   console.log(data);
 });
 ```
@@ -22,21 +25,35 @@ api.getLastPolls(function (error, data) {
 Some methods require a string and a callback.
 
 ```js
-api.getUserStories('pg', function (error, data) {
-  if (error)
-    throw error;
+var hn = require('hacker-news-api');
+
+hn.getUserStories('pg', function (error, data) {
+  if (error) throw error;
   console.log(data);
 });
 ```
 
-The `api.search(obj, cb)` method requires an object and a callback.
+The `api.search` method requires an object and a callback.
 ```js
-api.search({
+var hn = require('hacker-news-api');
+
+hn.search({
   query: 'javascript',
   tags: 'poll'
 }, function (error, data) {
-  if (error)
-    throw error;
+  if (error) throw error;
   console.log(data);
 });
 ```
+
+## Methods
+
+* `getItem(id, cb)`
+* `getUser(username, cb)`
+* `getLastStories(cb)`
+* `getLastPolls(cb)`
+* `getLastPosts(cb)`
+* `getUserStories(username, cb)`
+* `searchStories(search, cb)`
+* `searchPolls(search, cb)`
+* `search(obj, cb)`
