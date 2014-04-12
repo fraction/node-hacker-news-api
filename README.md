@@ -33,7 +33,7 @@ hn.getUserStories('pg', function (error, data) {
 });
 ```
 
-[Some methods](#Object-and-callback) requires an object and a callback.
+[Some methods](#Object-and-callback) require an object and a callback.
 ```js
 var hn = require('hacker-news-api');
 
