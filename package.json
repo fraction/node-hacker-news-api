@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/christianbundy/hn-api-node/issues"
   },
-  "homepage": "https://github.com/christianbundy/hn-api-node"
+  "homepage": "https://github.com/christianbundy/hn-api-node",
+  "dependencies": {
+    "request": "~2.34.0"
+  }
 }
