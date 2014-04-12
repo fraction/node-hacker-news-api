@@ -31,6 +31,10 @@ api.getLastPolls = function (cb) {
   api.call('search_by_date?tags=poll', cb);
 }
 
+api.getLastPosts = function (cb) {
+  api.call('search_by_date?tags=(story,poll)', cb);
+}
+
 api.getStoriesBy = function (username, cb) {
   api.call('search?tags=story,author_' + username);
 }
