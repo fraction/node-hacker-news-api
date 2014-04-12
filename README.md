@@ -11,7 +11,7 @@ npm install hacker-news-api
 
 ## Examples
 
-[Some methods](#Callback-only) only require a callback.
+[Some methods](#callback-only) only require a callback.
 
 ```js
 var hn = require('hacker-news-api');
@@ -22,7 +22,7 @@ hn.getLastPolls(function (error, data) {
 });
 ```
 
-[Some methods](#String-and-callback) require a string and a callback.
+[Some methods](#string-and-callback) require a string and a callback.
 
 ```js
 var hn = require('hacker-news-api');
@@ -33,7 +33,7 @@ hn.getUserStories('pg', function (error, data) {
 });
 ```
 
-[Some methods](#Object-and-callback) require an object and a callback.
+[Some methods](#object-and-callback) require an object and a callback.
 ```js
 var hn = require('hacker-news-api');
 
