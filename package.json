@@ -1,0 +1,26 @@
+{
+  "name": "hn-api-node",
+  "version": "0.0.0",
+  "description": "Node.js client for Algolia's Hacker News API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianbundy/hn-api-node.git"
+  },
+  "keywords": [
+    "hacker",
+    "news",
+    "hn",
+    "algolia",
+    "api"
+  ],
+  "author": "Christian Bundy <me@christianbundy.com> (http://christianbundy.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/christianbundy/hn-api-node/issues"
+  },
+  "homepage": "https://github.com/christianbundy/hn-api-node"
+}
