@@ -43,13 +43,11 @@ api.searchPolls = function (search, cb) {
   api.call('search?query=' + search + '&tags=poll', cb);
 }
 
-api.getStoriesBy = function (username, cb) {
+api.getUserStories = function (username, cb) {
   api.call('search?tags=story,author_' + username, cb);
 }
 
-api.search
-
-api.getUser('ChristianBundy', function (error, data) {
+api.getUserStories('ChristianBundy', function (error, data) {
   if (error)
     throw error;
   console.log(data);
