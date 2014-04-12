@@ -14,7 +14,7 @@ api.call = function (query, cb) {
   });
 }
 
-//
+// basic searches
 api.getItem = function (id, cb) {
   api.call('items/' + id, cb);
 }
@@ -35,6 +35,10 @@ api.getLastPosts = function (cb) {
   api.call('search_by_date?tags=(story,poll)', cb);
 }
 
+api.getUserStories = function (username, cb) {
+  api.call('search?tags=story,author_' + username, cb);
+}
+
 api.searchStories = function (search, cb) {
   api.call('search?query=' + search + '&tags=story', cb);
 }
@@ -43,11 +47,26 @@ api.searchPolls = function (search, cb) {
   api.call('search?query=' + search + '&tags=poll', cb);
 }
 
-api.getUserStories = function (username, cb) {
-  api.call('search?tags=story,author_' + username, cb);
+api.search = function (obj, cb) {
+  var first = true;
+  var params = '';
+  for (var key in obj) {
+    if (first) {
+      params += '?';
+      first = false;
+    } else {
+      params += '&';
+    }
+    params += key + '=' + obj[key];
+  }
+  api.call('search' + params, cb);
 }
 
-api.getUserStories('ChristianBundy', function (error, data) {
+
+api.search({
+  query: 'javascript',
+  tags: 'poll'
+}, function (error, data) {
   if (error)
     throw error;
   console.log(data);
