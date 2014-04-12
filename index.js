@@ -39,6 +39,10 @@ api.searchStories = function (search, cb) {
   api.call('search?query=' + search + '&tags=story', cb);
 }
 
+api.searchPolls = function (search, cb) {
+  api.call('search?query=' + search + '&tags=poll', cb);
+}
+
 api.getStoriesBy = function (username, cb) {
   api.call('search?tags=story,author_' + username, cb);
 }
