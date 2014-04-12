@@ -26,124 +26,119 @@ var hn = {
     });
   },
 
-  // get most popular
+  // get popular/recent comments
   getComments: function (cb) {
     hn.call('search?tags=comment', cb);
   },
-
-  getPolls: function (cb) {
-    hn.call('search?tags=poll', cb);
-  },
-
-  getPosts: function (cb) {
-    hn.call('search?tags=(story,poll)', cb);
-  },
-
-  getStories: function (cb) {
-    hn.call('search?tags=story', cb);
-  },
-
-  // get most recent
   getLastComments: function (cb) {
     hn.call('search_by_date?tags=comment', cb);
   },
 
+  // get popular/recent polls
+  getPolls: function (cb) {
+    hn.call('search?tags=poll', cb);
+  },
   getLastPolls: function (cb) {
     hn.call('search_by_date?tags=poll', cb);
   },
 
+  // get popular/recent posts
+  getPosts: function (cb) {
+    hn.call('search?tags=(story,poll)', cb);
+  },
   getLastPosts: function (cb) {
     hn.call('search_by_date?tags=(story,poll)', cb);
   },
 
+  // get popular/recent stories
+  getStories: function (cb) {
+    hn.call('search?tags=story', cb);
+  },
   getLastStories: function (cb) {
     hn.call('search_by_date?tags=story', cb);
   },
 
-  // get unique
+  // get unique post/comment
   getItem: function (id, cb) {
     hn.call('items/' + id, cb);
   },
 
+  // get unique user
   getUser: function (username, cb) {
     hn.call('users/' + username, cb);
   },
 
-  // get popular user activity
+  // get popular/recent user comments
   getUserComments: function (username, cb) {
     hn.call('search?tags=comment,author_' + username, cb);
   },
-
-  getUserPolls: function (username, cb) {
-    hn.call('search?tags=poll,author_' + username, cb);
-  },
-
-  getUserPosts: function (username, cb) {
-    hn.call('search?tags=(story,poll),author_' + username, cb);
-  },
-
-  getUserStories: function (username, cb) {
-    hn.call('search?tags=story,author_' + username, cb);
-  },
-
-  // get last user activity
   getLastUserComments: function (username, cb) {
     hn.call('search_by_date?tags=comment,author_' + username, cb);
   },
 
+  // get popular/recent user polls
+  getUserPolls: function (username, cb) {
+    hn.call('search?tags=poll,author_' + username, cb);
+  },
   getLastUserPolls: function (username, cb) {
     hn.call('search_by_date?tags=poll,author_' + username, cb);
   },
 
+  // get popular/recent user posts
+  getUserPosts: function (username, cb) {
+    hn.call('search?tags=(story,poll),author_' + username, cb);
+  },
   getLastUserPosts: function (username, cb) {
     hn.call('search_by_date?tags=(story,poll),author_' + username, cb);
   },
 
+  // get popular/recent user stories
+  getUserStories: function (username, cb) {
+    hn.call('search?tags=story,author_' + username, cb);
+  },
   getLastUserStories: function (username, cb) {
     hn.call('search_by_date?tags=story,author_' + username, cb);
   },
 
-  // search most popular
+
+  // search popular/recent comments
   searchComments: function (query, cb) {
     hn.call('search?query=' + query + '&tags=comment', cb);
   },
-
-  searchStories: function (query, cb) {
-    hn.call('search?query=' + query + '&tags=story', cb);
-  },
-
-  searchPolls: function (query, cb) {
-    hn.call('search?query=' + query + '&tags=poll', cb);
-  },
-
-  searchPosts: function (query, cb) {
-    hn.call('search?query=' + query + '&tags=story', cb);
-  },
-
-  // search most recent
   searchLastComments: function (query, cb) {
     hn.call('search_by_date?query=' + query + '&tags=comment', cb);
   },
 
-  searchLastStories: function (query, cb) {
-    hn.call('search_by_date?query=' + query + '&tags=story', cb);
+  // search popular/recent polls
+  searchPolls: function (query, cb) {
+    hn.call('search?query=' + query + '&tags=poll', cb);
   },
-
   searchLastPolls: function (query, cb) {
     hn.call('search_by_date?query=' + query + '&tags=poll', cb);
   },
 
+  // search popular/recent posts
+  searchPosts: function (query, cb) {
+    hn.call('search?query=' + query + '&tags=story', cb);
+  },
   searchLastPosts: function (query, cb) {
     hn.call('search_by_date?query=' + query + '&tags=story', cb);
   },
 
-  // custom popular search
+  // search popular/recent stories
+  searchStories: function (query, cb) {
+    hn.call('search?query=' + query + '&tags=story', cb);
+  },
+  searchLastStories: function (query, cb) {
+    hn.call('search_by_date?query=' + query + '&tags=story', cb);
+  },
+
+
+  // search popular/recent
   search: function (obj, cb) {
     var params = objectToParams(obj);
     hn.call('search' + params, cb);
   },
-
-  // custom recent search
   searchLast: function (obj, cb) {
     var params = objectToParams(obj);
     hn.call('search_by_date' + params, cb);
