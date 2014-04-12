@@ -36,7 +36,7 @@ api.getLastPosts = function (cb) {
 }
 
 api.getStoriesBy = function (username, cb) {
-  api.call('search?tags=story,author_' + username);
+  api.call('search?tags=story,author_' + username, cb);
 }
 
 api.search
