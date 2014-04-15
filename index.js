@@ -16,7 +16,7 @@ var objectToParams = function(obj) {
 var hn = {
   // make a request to the specified endpoint
   call: function (endpoint, cb) {
-    var query = 'https://hn.algolia.com/hn/v1/' + endpoint;
+    var query = 'https://hn.algolia.com/api/v1/' + endpoint;
     request(query, function (error, response, body) {
       if (!error && response.statusCode != 200)
         error = response.statusCode;
