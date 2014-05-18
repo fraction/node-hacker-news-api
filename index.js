@@ -20,8 +20,13 @@ var hn = {
     request(query, function (error, response, body) {
       if (!error && response.statusCode != 200)
         error = response.statusCode;
-      if (typeof body !== 'undefined')
-        body = JSON.parse(body);
+      if (typeof body !== 'undefined') {
+        try {
+          body = JSON.parse(body);
+        } catch(ex) {
+          if(!error) error = ex;
+        }
+      }
       cb(error, body);
     });
   },
