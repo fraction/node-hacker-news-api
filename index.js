@@ -1,15 +1,19 @@
-request = require('request');
+'use strict';
+
+var request = require('request');
 
 var objectToParams = function(obj) {
   var first = true;
   var params = '?';
   for (var key in obj) {
-    if (first) {
-      first = false;
-    } else {
-      params += '&';
+    if (obj.hasOwnProperty(key)) {
+      if (first) {
+        first = false;
+      } else {
+        params += '&';
+      }
+      params += key + '=' + obj[key];
     }
-    params += key + '=' + obj[key];
   }
 };
 
