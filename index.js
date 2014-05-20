@@ -1,21 +1,7 @@
 'use strict';
 
+var querystring = require('querystring');
 var request = require('request');
-
-var objectToParams = function(obj) {
-  var first = true;
-  var params = '?';
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (first) {
-        first = false;
-      } else {
-        params += '&';
-      }
-      params += key + '=' + obj[key];
-    }
-  }
-};
 
 var hn = {
   // make a request to the specified endpoint
@@ -145,12 +131,12 @@ var hn = {
 
   // search popular/recent
   search: function (obj, cb) {
-    var params = objectToParams(obj);
-    hn.call('search' + params, cb);
+    var params = querystring.stringify(obj);
+    hn.call('search?' + params, cb);
   },
   searchLast: function (obj, cb) {
-    var params = objectToParams(obj);
-    hn.call('search_by_date' + params, cb);
+    var params = querystring.stringify(obj);
+    hn.call('search_by_date?' + params, cb);
   }
 };
 
