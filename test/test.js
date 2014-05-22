@@ -19,7 +19,6 @@ function crazy_curry(args, fn) {
   fn = args.pop();
 
   return function(innerArgs) {
-    console.log(arguments[0]);
     innerArgs = slice(arguments);
     Array.prototype.push.apply(innerArgs, args);
     fn.apply(this, innerArgs);
