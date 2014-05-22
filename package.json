@@ -26,5 +26,10 @@
   "homepage": "https://github.com/christianbundy/node-hacker-news-api",
   "dependencies": {
     "request": "~2.34.0"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "nock": "*",
+    "mocha": "*"
   }
 }
