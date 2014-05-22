@@ -1,6 +1,6 @@
 {
   "name": "hacker-news-api",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "Node.js library for Algolia's Hacker News API",
   "main": "index.js",
   "scripts": {
