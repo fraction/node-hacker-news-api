@@ -7,7 +7,6 @@ var fixtures = JSON.parse(fs.readFileSync(__dirname + "/fixtures/fixtures.json")
 
 var api = nock('https://hn.algolia.com').persist();
 fixtures.forEach(function(f) {
-  console.log(f.url);
   api.get(f.url).reply(200, f.reply);
 });
 
