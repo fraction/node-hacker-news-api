@@ -134,10 +134,10 @@ var hn = {
 
   // search popular/recent posts
   searchPosts: function (query, cb) {
-    hn.call('search?query=' + query + '&tags=story', cb);
+    hn.call('search', {query: query, tags: 'story'}, cb);
   },
   searchLastPosts: function (query, cb) {
-    hn.call('search_by_date?query=' + query + '&tags=story', cb);
+    hn.call('search_by_date', {query: query, tags: 'story'}, cb);
   },
 
   // search popular/recent stories
