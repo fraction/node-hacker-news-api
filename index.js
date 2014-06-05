@@ -232,10 +232,10 @@ var hn = {
 
   // search popular/recent posts
   searchPosts: function (query, cb) {
-    hn.call('search', {query: query, tags: 'story'}, cb);
+    hn.call('search', {query: query, tags: '(story,poll)'}, cb);
   },
   searchLastPosts: function (query, cb) {
-    hn.call('search_by_date', {query: query, tags: 'story'}, cb);
+    hn.call('search_by_date', {query: query, tags: '(story,poll)'}, cb);
   },
   searchPostsSince : function (query, since, cb) {
     genericSince({type: 'search_by_date',
