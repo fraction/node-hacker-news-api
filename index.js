@@ -24,17 +24,24 @@ function timestamp(since) {
                          now.getUTCSeconds()) / 1000;
   
   switch (since) {
-    default:
-      // past_24h
+    case 'past_24h':
       return (now_utc - (24 * 60 * 60));
     case 'past_week':
       return (now_utc - (7 * 24 * 60 * 60));
     case 'past_month':
       return (now_utc - (30 * 24 * 60 * 60));
-    case 'forever':
-      return 0;
   }
 }
+
+function genericSince(obj, cb) {
+  var numericFiltersVal = (obj.since === 'forever') ? '' : 'created_at_i>=' + timestamp(obj.since);
+  var queryObj = {tags: obj.tags,
+                  hitsPerPage: MAX_HITS_PER_PAGE,
+                  numericFilters: numericFiltersVal};
+  if (typeof obj.query !== 'undefined') { queryObj.query = obj.query; }
+  hn.call(obj.type, queryObj, cb);
+}
+
 
 var hn = {
   // Make a request with the specified uri component array
@@ -77,10 +84,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'comment'}, cb);
   },
   getCommentsSince : function (since, cb) {
-    var query_args = {tags: 'comment',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'comment', 
+                          since: since}, cb);
   },
 
 
@@ -92,10 +98,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'poll'}, cb);
   },
   getPollsSince : function (since, cb) {
-    var query_args = {tags: 'poll',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'poll', 
+                          since: since}, cb);
   },
 
 
@@ -107,10 +112,9 @@ var hn = {
     hn.call('search_by_date', {tags: '(story,poll)'}, cb);
   },
   getPostsSince : function (since, cb) {
-    var query_args = {tags: '(story,poll)',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: '(story,poll)', 
+                          since: since}, cb);
   },
 
 
@@ -122,10 +126,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'story'}, cb);
   },
   getStoriesSince : function (since, cb) {
-    var query_args = {tags: 'story',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'story', 
+                          since: since}, cb);
   },
 
 
@@ -149,10 +152,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'comment,author_' + username}, cb);
   },
   getUserCommentsSince : function (username, since, cb) {
-    var query_args = {tags: 'comment,author_' + username,
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'comment,author_' + username, 
+                          since: since}, cb);
   },
 
 
@@ -164,10 +166,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'poll,author_' + username}, cb);
   },
   getUserPollsSince : function (username, since, cb) {
-    var query_args = {tags: 'poll,author_' + username,
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'poll,author_' + username, 
+                          since: since}, cb);
   },
 
 
@@ -179,10 +180,9 @@ var hn = {
     hn.call('search_by_date', {tags: '(story,poll),author_' + username}, cb);
   },
   getUserPostsSince : function (username, since, cb) {
-    var query_args = {tags: '(story,poll),author_' + username,
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: '(story,poll),author_' + username, 
+                          since: since}, cb);
   },
 
 
@@ -194,10 +194,9 @@ var hn = {
     hn.call('search_by_date', {tags: 'story,author_' + username}, cb);
   },
   getUserStoriesSince : function (username, since, cb) {
-    var query_args = {tags: 'story,author_' + username,
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'story,author_' + username, 
+                          since: since}, cb);
   },
 
 
@@ -209,11 +208,10 @@ var hn = {
     hn.call('search_by_date', {query: query, tags: 'comment'}, cb);
   },
   searchCommentsSince : function (query, since, cb) {
-    var query_args = {query: query,
-                      tags: 'comment',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'comment', 
+                          since: since,
+                          query: query}, cb);
   },
 
 
@@ -225,11 +223,10 @@ var hn = {
     hn.call('search_by_date', {query: query, tags: 'poll'}, cb);
   },
   searchPollsSince : function (query, since, cb) {
-    var query_args = {query: query,
-                      tags: 'poll',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'poll', 
+                          since: since,
+                          query: query}, cb);
   },
 
 
@@ -241,11 +238,10 @@ var hn = {
     hn.call('search_by_date', {query: query, tags: 'story'}, cb);
   },
   searchPostsSince : function (query, since, cb) {
-    var query_args = {query: query,
-                      tags: '(story,poll)',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: '(story,poll)', 
+                          since: since,
+                          query: query}, cb);
   },
 
 
@@ -257,11 +253,10 @@ var hn = {
     hn.call('search_by_date', {query: query, tags: 'story'}, cb);
   },
   searchStoriesSince : function (query, since, cb) {
-    var query_args = {query: query,
-                      tags: 'story',
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
+    genericSince({type: 'search_by_date',
+                          tags: 'story', 
+                          since: since,
+                          query: query}, cb);
   },
 
 
@@ -272,12 +267,11 @@ var hn = {
   searchLast: function (obj, cb) {
     hn.call('search_by_date', obj, cb);
   },
-  searchSince : function (query, since, cb) {
-    var query_args = {query: query,
-                      hitsPerPage: MAX_HITS_PER_PAGE,
-                      numericFilters: 'created_at_i>=' + timestamp(since)};
-    hn.call('search_by_date', query_args, cb);
-  },
+  searchSince : function (obj, since, cb) {
+    obj.type = 'search_by_date';
+    obj.since = since;
+    genericSince(obj, cb);
+  }
 };
 
 module.exports = hn;
