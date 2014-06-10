@@ -50,16 +50,19 @@ function encodeURIComponentArray(arr) {
  * @param marker What is the date range marker?
  */
 function numericFilters(caller, marker) {
+  var sym = '=';
   switch (caller) {
     case 'before':
-      var sym = '<=';
+      sym = '<' + sym;
+      break;
     case 'since':
-      var sym = '>=';
+      sym = '>' + sym;
+      break;
   }
 
   // Don't set a timestamp incase of forever, better performance
-  var numericFilters = (marker === 'forever') ? '' : 'created_at_i' + sym +  timestamp(marker);
-  return numericFilters;
+  var nf = (marker === 'forever') ? '' : 'created_at_i' + sym +  timestamp(marker);
+  return nf;
 }
 
 
@@ -129,8 +132,8 @@ var hn = function() {
       }
       cb(error, body);
     });
-  }
-}
+  };
+};
 module.exports = new hn();
 
 
@@ -190,7 +193,6 @@ FUNCTIONS_TIME.forEach(function (fName) {
 
     if (arguments.length === 2 && typeof cb === 'function') {
       this.tags.tags = this.tags.tags + '(' + this.tags_or.tags + ')';
-      this.
       this.call(this.type, this.tags, cb);
     }
     else {
@@ -211,6 +213,7 @@ FUNCTIONS_SINGLE.forEach(function (fName) {
         this.type = TYPE_USER;
         break;
     }
+
     this.tags.tags = this.tags.tags + '(' + this.tags_or.tags + ')';
     this.call([this.type, id], cb);
   };
@@ -221,7 +224,7 @@ hn.prototype.search = function (query, cb) {
   this.tags.query = query; 
 
   if (arguments.length === 2 && typeof cb === 'function') {
-    if (typeof this.type === 'undefined') { this.type = TYPE_SEARCH }
+    if (typeof this.type === 'undefined') { this.type = TYPE_SEARCH; }
     this.tags.tags = '(' + this.tags_or.tags + ')';
     this.call(this.type, this.tags, cb);
   }
