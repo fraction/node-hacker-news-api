@@ -100,7 +100,7 @@ var hn = function() {
  
   this.tags_and = [ ];
   this.tags_or = [ ];
-  this.tags = { hitsPerPage: MAX_HITS_PER_PAGE, tags: [ ] };
+  this.tags = { hitsPerPage: '', tags: [ ] };
   this.type = TYPE_SEARCH;
 
   // Make a request with the specified uri component array
@@ -108,7 +108,8 @@ var hn = function() {
   // it will be assumed to be empty and the callback may be 
   // there instead
   this.call = function (cb) {
-   
+    this.tags.hitsPerPage = MAX_HITS_PER_PAGE;
+ 
     if (this.tags_or.length > 0) {
       var or = '(' + this.tags_or.toString() + ')';
       this.tags.tags.push(or);
@@ -134,7 +135,7 @@ var hn = function() {
     // Reset
     this.tags_and = [ ];
     this.tags_or = [ ];
-    this.tags = { hitsPerPage: MAX_HITS_PER_PAGE, tags: [ ] };
+    this.tags = { hitsPerPage: '', tags: [ ] };
     this.type = TYPE_SEARCH;
     request(query, function (error, response, body) {
       if (!error && response.statusCode != 200) { 
@@ -153,11 +154,6 @@ var hn = function() {
     });
   };
 
-  this.setHitsPerPage = function (n) {
-    if (typeof n !== 'number') { console.log("ERROR"); }
-    if (n > 1000 || n < 1) { console.log("Must be between 1 & 1000"); }
-    MAX_HITS_PER_PAGE = n; 
-  };
 };
 module.exports = new hn();
 
@@ -255,4 +251,11 @@ hn.prototype.search = function (query, cb) {
   else {
     return this;
   }
+};
+
+
+hn.prototype.setHitsPerPage = function (n) {
+    if (typeof n !== 'number') { console.log("ERROR"); }
+    if (n > 1000 || n < 1) { console.log("Must be between 1 & 1000"); }
+    MAX_HITS_PER_PAGE = n;
 };

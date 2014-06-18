@@ -3,6 +3,7 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var nock = require('nock');
 
+hn.setHitsPerPage(1);
 var fixtures = JSON.parse(fs.readFileSync(__dirname + "/fixtures/fixtures.json"));
 
 var api = nock('https://hn.algolia.com').persist();
@@ -55,38 +56,38 @@ describe('hn', function(){
   }
 
   it('should get comments', function(done) {
-    hn.getComments(crazy_curry(['comment'], done, verifyDataHasOneOfTags));
+    hn.comment().top(crazy_curry(['comment'], done, verifyDataHasOneOfTags));
   });
   it('should get latest comments', function(done) {
-    hn.getLastComments(crazy_curry(['comment'], done, verifyDataHasOneOfTags));
+    hn.comment().recent(crazy_curry(['comment'], done, verifyDataHasOneOfTags));
   });
 
 
   it('should get polls', function(done) {
-    hn.getPolls(crazy_curry(['poll'], done, verifyDataHasOneOfTags));
+    hn.poll().top(crazy_curry(['poll'], done, verifyDataHasOneOfTags));
   });
   it('should get latest polls', function(done) {
-    hn.getLastPolls(crazy_curry(['poll'], done, verifyDataHasOneOfTags));
+    hn.poll().recent(crazy_curry(['poll'], done, verifyDataHasOneOfTags));
   });
 
 
   it('should get posts', function(done) {
-    hn.getPosts(crazy_curry(['story', 'poll'], done, verifyDataHasOneOfTags));
+    hn.story().poll().top(crazy_curry(['story', 'poll'], done, verifyDataHasOneOfTags));
   });
   it('should get latest posts', function(done) {
-    hn.getLastPosts(crazy_curry(['story', 'poll'], done, verifyDataHasOneOfTags));
+    hn.story().poll().recent(crazy_curry(['story', 'poll'], done, verifyDataHasOneOfTags));
   });
 
 
   it('should get stories', function(done) {
-    hn.getStories(crazy_curry(['story'], done, verifyDataHasOneOfTags));
+    hn.story().top(crazy_curry(['story'], done, verifyDataHasOneOfTags));
   });
   it('should get latest stories', function(done) {
-    hn.getLastStories(crazy_curry(['story'], done, verifyDataHasOneOfTags));
+    hn.story().recent(crazy_curry(['story'], done, verifyDataHasOneOfTags));
   });
 
   it('should get item', function(done) {
-    hn.getItem(17, function(err, res) {
+    hn.item(17, function(err, res) {
       if(err) return done(err);
       expect(res.id).to.equal(17);
       expect(res.type).to.equal('comment');
@@ -95,7 +96,7 @@ describe('hn', function(){
   });
 
   it('should get user', function(done) {
-    hn.getUser('pg', function(err, res) {
+    hn.user('pg', function(err, res) {
       if(err) return done(err);
       expect(res.username).to.equal('pg');
       done();
@@ -103,60 +104,47 @@ describe('hn', function(){
   });
 
   it('should get user comments', function(done) {
-    hn.getUserComments('pg', crazy_curry(['comment','author_pg'], done, verifyDataHasAllOfTags));
+    hn.comment().author('pg').top(crazy_curry(['comment','author_pg'], done, verifyDataHasAllOfTags));
   });
   it('should get last user comments', function(done) {
-    hn.getLastUserComments('pg', crazy_curry(['comment','author_pg'], done, verifyDataHasAllOfTags));
+    hn.comment().author('pg').recent(crazy_curry(['comment','author_pg'], done, verifyDataHasAllOfTags));
   });
 
   it('should get user polls', function(done) {
-    hn.getUserPolls('pg', crazy_curry(['poll','author_pg'], done, verifyDataHasAllOfTags));
+    hn.poll().author('pg').top(crazy_curry(['poll','author_pg'], done, verifyDataHasAllOfTags));
   });
   it('should get last user polls', function(done) {
-    hn.getLastUserPolls('pg', crazy_curry(['poll','author_pg'], done, verifyDataHasAllOfTags));
+    hn.poll().author('pg').recent(crazy_curry(['poll','author_pg'], done, verifyDataHasAllOfTags));
   });
 
   it('should get user stories', function(done) {
-    hn.getUserStories('pg', crazy_curry(['story','author_pg'], done, verifyDataHasAllOfTags));
+    hn.story().author('pg').top(crazy_curry(['story','author_pg'], done, verifyDataHasAllOfTags));
   });
   it('should get last user stories', function(done) {
-    hn.getLastUserStories('pg', crazy_curry(['story','author_pg'], done, verifyDataHasAllOfTags));
+    hn.story().author('pg').recent(crazy_curry(['story','author_pg'], done, verifyDataHasAllOfTags));
   });
 
   it('should search comments', function(done) {
-    hn.searchComments('apple', crazy_curry(['comment'], done, verifyDataHasAllOfTags));
+    hn.comment().top().search('apple', crazy_curry(['comment'], done, verifyDataHasAllOfTags));
   });
   it('should search last comments', function(done) {
-    hn.searchLastComments('apple', crazy_curry(['comment'], done, verifyDataHasAllOfTags));
+    hn.comment().recent().search('apple', crazy_curry(['comment'], done, verifyDataHasAllOfTags));
   });
 
   it('should search polls', function(done) {
-    hn.searchPolls('apple', crazy_curry(['poll'], done, verifyDataHasAllOfTags));
+    hn.poll().top().search('apple', crazy_curry(['poll'], done, verifyDataHasAllOfTags));
   });
   it('should search last polls', function(done) {
-    hn.searchLastPolls('apple', crazy_curry(['poll'], done, verifyDataHasAllOfTags));
+    hn.poll().recent().search('apple', crazy_curry(['poll'], done, verifyDataHasAllOfTags));
   });
 
-
-  it('should search posts', function(done) {
-    hn.searchPosts('apple', crazy_curry(['story'], done, verifyDataHasAllOfTags));
-  });
-  it('should search last posts', function(done) {
-    hn.searchLastPosts('apple', crazy_curry(['story'], done, verifyDataHasAllOfTags));
-  });
-
-  it('should search posts', function(done) {
-    hn.searchStories('apple', crazy_curry(['story'], done, verifyDataHasAllOfTags));
-  });
-  it('should search last posts', function(done) {
-    hn.searchLastStories('apple', crazy_curry(['story'], done, verifyDataHasAllOfTags));
-  });
-
+  /*
   it('should search', function(done) {
     hn.search({tags: 'ask_hn', query: 'apple', page: 2}, crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
   });
   it('should search last', function(done) {
     hn.searchLast({tags: 'ask_hn', query: 'apple', page: 2}, crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
   });
+  */
 
 });
