@@ -37,7 +37,7 @@ var TYPE_SEARCH_BY_DATE = 'search_by_date';
 
 
 function encodeURIComponentArray(arr) {
-  return arr.map(function(component) {
+  return arr.map(function (component) {
     return encodeURIComponent(component);
   });
 }
@@ -63,6 +63,7 @@ function numericFilters(caller, marker) {
   // Don't set a timestamp incase of forever, better performance
   var nf = (marker === 'forever') ? '' : 'created_at_i' + sym +  timestamp(marker);
   return nf;
+     
 }
 
 
@@ -97,27 +98,44 @@ function timestamp(range) {
 
 var hn = function() {
  
-  this.tags_or = { };
-  this.tags = {hitsPerPage: MAX_HITS_PER_PAGE};
+  this.tags_and = [ ];
+  this.tags_or = [ ];
+  this.tags = { hitsPerPage: MAX_HITS_PER_PAGE, tags: [ ] };
+  this.type = TYPE_SEARCH;
 
   // Make a request with the specified uri component array
-  // and query argument object. If the queryObj is omitted,
+  // and query argument object. If the this.tags is omitted,
   // it will be assumed to be empty and the callback may be 
   // there instead
-  this.call = function (components, queryObj, cb) {
-    if (!Array.isArray(components)) components = [components];
-    if (typeof queryObj === 'function') {
-      cb = queryObj;
-      queryObj = {};
+  this.call = function (cb) {
+   
+    if (this.tags_or.length > 0) {
+      var or = '(' + this.tags_or.toString() + ')';
+      this.tags.tags.push(or);
     }
 
-    var endpoint_parts = encodeURIComponentArray(components);
+    if (this.tags_and.length > 0) {
+      var and = this.tags_and.toString();
+      this.tags.tags.push(and);
+    }
+
+    this.tags.tags = this.tags.tags.toString();
+ 
+    var endpoint_parts = encodeURIComponentArray([this.type]);
     var query = 'https://hn.algolia.com/api/v1/' + endpoint_parts.join('/');
 
-    var query_args = querystring.stringify(queryObj);
-    if(query_args.length > 0) query += '?' + query_args;
+    var query_args = querystring.stringify(this.tags);
+    if (this.tags.tags.length > 0) query += '?' + query_args;
+    if (this.type === TYPE_ITEM || this.type === TYPE_USER) {
+      query = query + '/' + this.id;
+    }
 
     console.log(query);
+    // Reset
+    this.tags_and = [ ];
+    this.tags_or = [ ];
+    this.tags = { hitsPerPage: MAX_HITS_PER_PAGE, tags: [ ] };
+    this.type = TYPE_SEARCH;
     request(query, function (error, response, body) {
       if (!error && response.statusCode != 200) { 
         error = response.statusCode;
@@ -130,8 +148,15 @@ var hn = function() {
           if (!error) error = ex;
         }
       }
+
       cb(error, body);
     });
+  };
+
+  this.setHitsPerPage = function (n) {
+    if (typeof n !== 'number') { console.log("ERROR"); }
+    if (n > 1000 || n < 1) { console.log("Must be between 1 & 1000"); }
+    MAX_HITS_PER_PAGE = n; 
   };
 };
 module.exports = new hn();
@@ -142,19 +167,21 @@ module.exports = new hn();
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var FUNCTIONS_TAG = ['story','comment','poll','pollop','show_hn','ask_hn','author'];
+var FUNCTIONS_TAG = ['story','comment','poll','pollopt','show_hn','ask_hn','author'];
 FUNCTIONS_TAG.forEach(function (fName) {
   hn.prototype[fName] = function (id) {
 
     if (arguments.length === 1 && (fName === 'author' || fName === 'story')) {
         // Have an arg to deal with, either the author (username) or story id
         // This tag is ANDed 
-        fName = fName + '_' + id;
-        this.tags.tags = (this.tags.tags === '') ? fName : this.tags.tags + ',' + fName;
+        //this.tags.tags = fName + '_' + id;
+        this.tags_and.push(fName + '_' + id);
     }
     else {
         // Or these tags
-        this.tags_or.tags = (typeof this.tags_or.tags === 'undefined') ? fName : this.tags_or.tags + ',' + fName;
+        //this.tags_or.tags = (this.tags_or.tags === '') ? fName : this.tags_or.tags + ',' + fName;
+        //this.tags_or.push(fName);
+        this.tags_or.push(fName);
     }
 
     return this;
@@ -176,8 +203,7 @@ FUNCTIONS_FILTER.forEach(function (fName) {
     }
 
     if (arguments.length === 1 && typeof cb === 'function') {
-        this.tags.tags = this.tags.tags + '(' + this.tags_or.tags + ')';
-        this.call(this.type, this.tags, cb);
+      this.call(cb);
     }
     else {
         return this;
@@ -189,11 +215,11 @@ FUNCTIONS_FILTER.forEach(function (fName) {
 var FUNCTIONS_TIME = ['since', 'before'];
 FUNCTIONS_TIME.forEach(function (fName) {
   hn.prototype[fName] = function(marker, cb) {
+    this.type = TYPE_SEARCH_BY_DATE;
     this.tags.numericFilters = numericFilters(fName, marker);
 
     if (arguments.length === 2 && typeof cb === 'function') {
-      this.tags.tags = this.tags.tags + '(' + this.tags_or.tags + ')';
-      this.call(this.type, this.tags, cb);
+      this.call(cb);
     }
     else {
       return this;
@@ -214,8 +240,8 @@ FUNCTIONS_SINGLE.forEach(function (fName) {
         break;
     }
 
-    this.tags.tags = this.tags.tags + '(' + this.tags_or.tags + ')';
-    this.call([this.type, id], cb);
+    this.id = id;
+    this.call(cb);
   };
 });
 
@@ -224,9 +250,7 @@ hn.prototype.search = function (query, cb) {
   this.tags.query = query; 
 
   if (arguments.length === 2 && typeof cb === 'function') {
-    if (typeof this.type === 'undefined') { this.type = TYPE_SEARCH; }
-    this.tags.tags = '(' + this.tags_or.tags + ')';
-    this.call(this.type, this.tags, cb);
+    this.call(cb);
   }
   else {
     return this;
