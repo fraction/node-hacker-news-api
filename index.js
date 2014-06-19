@@ -3,7 +3,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// REQUIRE                                                        
+// REQUIRE 
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -36,13 +36,6 @@ var TYPE_SEARCH_BY_DATE = 'search_by_date';
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function encodeURIComponentArray(arr) {
-  return arr.map(function (component) {
-    return encodeURIComponent(component);
-  });
-}
-
-
 /**
  * Generate the numeric filter
  *
@@ -61,9 +54,9 @@ function numericFilters(caller, marker) {
   }
 
   // Don't set a timestamp incase of forever, better performance
-  var nf = (marker === 'forever') ? '' : 'created_at_i' + sym +  timestamp(marker);
+  var nf = (marker === 'forever') ? '' : 
+                                    'created_at_i' + sym + timestamp(marker);
   return nf;
-     
 }
 
 
@@ -96,47 +89,52 @@ function timestamp(range) {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var hn = function() {
+var hn = function () {
  
-  this.tags_and = [ ];
-  this.tags_or = [ ];
-  this.tags = { hitsPerPage: '', tags: [ ] };
   this.type = TYPE_SEARCH;
+  this.tags = { hitsPerPage: '', tags: [ ] };
+  this.tags_or = [ ];
+  this.tags_and = [ ];
 
-  // Make a request with the specified uri component array
-  // and query argument object. If the this.tags is omitted,
-  // it will be assumed to be empty and the callback may be 
-  // there instead
+
+  // Make HTTP request
   this.call = function (cb) {
     this.tags.hitsPerPage = MAX_HITS_PER_PAGE;
- 
+
+
+    // Build the tags that will be logically OR'ed 
     if (this.tags_or.length > 0) {
-      var or = '(' + this.tags_or.toString() + ')';
-      this.tags.tags.push(or);
+      this.tags.tags.push('(' + this.tags_or.toString() + ')');
     }
 
+    // Build the tags that will be logically AND'ed
     if (this.tags_and.length > 0) {
-      var and = this.tags_and.toString();
-      this.tags.tags.push(and);
+      this.tags.tags.push(this.tags_and.toString());
     }
 
+    // Final tag param for querystring
     this.tags.tags = this.tags.tags.toString();
- 
-    var endpoint_parts = encodeURIComponentArray([this.type]);
-    var query = 'https://hn.algolia.com/api/v1/' + endpoint_parts.join('/');
 
+
+    // Build querystring
+    var query = 'https://hn.algolia.com/api/v1/' + this.type;
     var query_args = querystring.stringify(this.tags);
+
     if (this.tags.tags.length > 0) query += '?' + query_args;
     if (this.type === TYPE_ITEM || this.type === TYPE_USER) {
+      // In this case, there are no query_args
       query = query + '/' + this.id;
     }
 
-    console.log(query);
-    // Reset
-    this.tags_and = [ ];
-    this.tags_or = [ ];
-    this.tags = { hitsPerPage: '', tags: [ ] };
+
+    // Reset hn object attributes before request is made
     this.type = TYPE_SEARCH;
+    this.tags = { hitsPerPage: '', tags: [ ] };
+    this.tags_or = [ ];
+    this.tags_and = [ ];
+
+   
+    // Now make acutal HTTP request
     request(query, function (error, response, body) {
       if (!error && response.statusCode != 200) { 
         error = response.statusCode;
@@ -153,7 +151,6 @@ var hn = function() {
       cb(error, body);
     });
   };
-
 };
 module.exports = new hn();
 
@@ -163,21 +160,22 @@ module.exports = new hn();
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var FUNCTIONS_TAG = ['story','comment','poll','pollopt','show_hn','ask_hn','author'];
+var FUNCTIONS_TAG = ['story',
+                     'comment',
+                     'poll',
+                     'pollopt',
+                     'show_hn',
+                     'ask_hn',
+                     'author'];
 FUNCTIONS_TAG.forEach(function (fName) {
   hn.prototype[fName] = function (id) {
 
     if (arguments.length === 1 && (fName === 'author' || fName === 'story')) {
-        // Have an arg to deal with, either the author (username) or story id
-        // This tag is ANDed 
-        //this.tags.tags = fName + '_' + id;
-        this.tags_and.push(fName + '_' + id);
+      // Have an arg to deal with, either the author (username) or story id
+      this.tags_and.push(fName + '_' + id);
     }
     else {
-        // Or these tags
-        //this.tags_or.tags = (this.tags_or.tags === '') ? fName : this.tags_or.tags + ',' + fName;
-        //this.tags_or.push(fName);
-        this.tags_or.push(fName);
+      this.tags_or.push(fName);
     }
 
     return this;
@@ -185,10 +183,10 @@ FUNCTIONS_TAG.forEach(function (fName) {
 });
 
 
-var FUNCTIONS_FILTER = ['top', 'recent'];
+var FUNCTIONS_FILTER = ['top','recent'];
 FUNCTIONS_FILTER.forEach(function (fName) {
   hn.prototype[fName] = function (cb) {
-    // Set search type 
+    
     switch (fName) {
       case 'top':
         this.type = TYPE_SEARCH;
@@ -199,18 +197,19 @@ FUNCTIONS_FILTER.forEach(function (fName) {
     }
 
     if (arguments.length === 1 && typeof cb === 'function') {
+      // Method chaining has stopped, can execute call
       this.call(cb);
     }
     else {
-        return this;
+      return this;
     }
   };
 });
 
 
-var FUNCTIONS_TIME = ['since', 'before'];
+var FUNCTIONS_TIME = ['since','before'];
 FUNCTIONS_TIME.forEach(function (fName) {
-  hn.prototype[fName] = function(marker, cb) {
+  hn.prototype[fName] = function (marker, cb) {
     this.type = TYPE_SEARCH_BY_DATE;
     this.tags.numericFilters = numericFilters(fName, marker);
 
@@ -224,9 +223,10 @@ FUNCTIONS_TIME.forEach(function (fName) {
 });
 
 
-var FUNCTIONS_SINGLE = ['item', 'user'];
+var FUNCTIONS_SINGLE = ['item','user'];
 FUNCTIONS_SINGLE.forEach(function (fName) {
-  hn.prototype[fName] = function(id, cb) {
+  hn.prototype[fName] = function (id, cb) {
+
     switch (fName) {
       case 'item':
         this.type = TYPE_ITEM;
@@ -255,7 +255,10 @@ hn.prototype.search = function (query, cb) {
 
 
 hn.prototype.setHitsPerPage = function (n) {
-    if (typeof n !== 'number') { console.log("ERROR"); }
-    if (n > 1000 || n < 1) { console.log("Must be between 1 & 1000"); }
+    if (typeof n !== 'number') { console.log('n is NaN'); return; }
+    if (n % 1 !== 0) { console.log('n must be an integer'); return; }
+    if (n > 1000 || n < 1) { console.log('1 <= n <= 1000'); return; }
+    
     MAX_HITS_PER_PAGE = n;
+    return this;
 };
