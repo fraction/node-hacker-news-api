@@ -92,35 +92,35 @@ function timestamp(range) {
 var hn = function () {
  
   this.type = TYPE_SEARCH;
-  this.tags = { hitsPerPage: '', tags: [ ] };
+  this.params = { hitsPerPage: '', tags: [ ] };
   this.tags_or = [ ];
   this.tags_and = [ ];
 
 
   // Make HTTP request
   this.call = function (cb) {
-    this.tags.hitsPerPage = MAX_HITS_PER_PAGE;
+    this.params.hitsPerPage = MAX_HITS_PER_PAGE;
 
 
     // Build the tags that will be logically OR'ed 
     if (this.tags_or.length > 0) {
-      this.tags.tags.push('(' + this.tags_or.toString() + ')');
+      this.params.tags.push('(' + this.tags_or.toString() + ')');
     }
 
     // Build the tags that will be logically AND'ed
     if (this.tags_and.length > 0) {
-      this.tags.tags.push(this.tags_and.toString());
+      this.params.tags.push(this.tags_and.toString());
     }
 
     // Final tag param for querystring
-    this.tags.tags = this.tags.tags.toString();
+    this.params.tags = this.params.tags.toString();
 
 
     // Build querystring
     var query = 'https://hn.algolia.com/api/v1/' + this.type;
-    var query_args = querystring.stringify(this.tags);
+    var query_args = querystring.stringify(this.params);
 
-    if (this.tags.tags.length > 0) query += '?' + query_args;
+    if (this.params.tags.length > 0) query += '?' + query_args;
     if (this.type === TYPE_ITEM || this.type === TYPE_USER) {
       // In this case, there are no query_args
       query = query + '/' + this.id;
@@ -129,7 +129,7 @@ var hn = function () {
 
     // Reset hn object attributes before request is made
     this.type = TYPE_SEARCH;
-    this.tags = { hitsPerPage: '', tags: [ ] };
+    this.params = { hitsPerPage: '', tags: [ ] };
     this.tags_or = [ ];
     this.tags_and = [ ];
 
@@ -211,7 +211,7 @@ var FUNCTIONS_TIME = ['since','before'];
 FUNCTIONS_TIME.forEach(function (fName) {
   hn.prototype[fName] = function (marker, cb) {
     this.type = TYPE_SEARCH_BY_DATE;
-    this.tags.numericFilters = numericFilters(fName, marker);
+    this.params.numericFilters = numericFilters(fName, marker);
 
     if (arguments.length === 2 && typeof cb === 'function') {
       this.call(cb);
@@ -243,7 +243,7 @@ FUNCTIONS_SINGLE.forEach(function (fName) {
 
 
 hn.prototype.search = function (query, cb) {
-  this.tags.query = query; 
+  this.params.query = query; 
 
   if (arguments.length === 2 && typeof cb === 'function') {
     this.call(cb);
@@ -254,11 +254,22 @@ hn.prototype.search = function (query, cb) {
 };
 
 
-hn.prototype.setHitsPerPage = function (n) {
+// Persists from one request to another
+hn.prototype.hitsPerPage = function (n) {
     if (typeof n !== 'number') { console.log('n is NaN'); return; }
     if (n % 1 !== 0) { console.log('n must be an integer'); return; }
     if (n > 1000 || n < 1) { console.log('1 <= n <= 1000'); return; }
-    
+   
     MAX_HITS_PER_PAGE = n;
+    return this;
+};
+
+
+hn.prototype.page = function (n) {
+    if (typeof n !== 'number') { console.log('n is NaN'); return; }
+    if (n % 1 !== 0) { console.log('n must be an integer'); return; }
+    if (n < 0) { console.log('0 <= n'); return; }
+
+    this.params.page = n;
     return this;
 };

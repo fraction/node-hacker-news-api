@@ -11,102 +11,108 @@ npm install hacker-news-api
 
 ## Examples
 
-[Some methods](#callback-only) only require a callback.
+Almost all methods are chainable, with flexible ordering. Methods are executed
+(as in HTTP requests are made) once a callback function is passed (not all
+  methods accept a callback). This will always be the last method in the chain.
 
 ```js
 var hn = require('hacker-news-api');
 
-hn.getLastPolls(function (error, data) {
+// Get recent ask_hn posts, polls, and comments
+hn.ask_hn().poll().comment().recent(function (error, data) {
+  if (error) throw error;
+  console.log(data);
+});
+
+// Get pg's top story and show_hn posts
+hn.author('pg').story().show_hn().top(function (error, data) {
+  if (error) throw error;
+  console.log(data);
+});
+
+// Search for comments and storys containing 'js' before the past week
+hn.comment().story().search('js').before('past_week', function (error, data) {
   if (error) throw error;
   console.log(data);
 });
 ```
 
-[Some methods](#string-and-callback) require a string and a callback.
+## Chainable Methods
 
-```js
-var hn = require('hacker-news-api');
+### Tags (OR'ed)
 
-hn.getUserStories('pg', function (error, data) {
-  if (error) throw error;
-  console.log(data);
-});
-```
+These tags are logically OR'ed when chained.
 
-[Some methods](#object-and-callback) require an object and a callback.
-```js
-var hn = require('hacker-news-api');
+- ```ask_hn()```
+- ```comment()```
+- ```poll()```
+- ```pollopt()```
+- ```show_hn()```
+- ```story()```
 
-hn.search({
-  query: 'javascript',
-  tags: 'poll'
-}, function (error, data) {
-  if (error) throw error;
-  console.log(data);
-});
-```
 
-## Methods
+### Tags (AND'ed)
 
-### Callback only
+These tags are logically AND'ed when chained.
 
-* `getComments(cb)`
-* `getLastComments(cb)`;
-* `getPolls(cb)`
-* `getLastPolls(cb)`
-* `getPosts(cb)`
-* `getLastPosts(cb)`
-* `getStories(cb)`
-* `getLastStories(cb)`
+- ```author(username)```
+- ```story(id)```
 
-### String(s) and callback
 
-For ```xSince()``` methods, the following are valid inputs for the ```since```
-parameter: **'past_24h'**, **'past_week'**, **'past_month'**, **'forever'**
+### Filters
 
-* `getCommentsSince(since, cb)`;
-* `getPollsSince(since, cb)`;
-* `getPostsSince(since, cb)`;
-* `getStoriesSince(since, cb)`;
-* `getItem(id, cb)`
-* `getUser(username, cb)`
-* `getUserComments(username, cb)`
-* `getLastUserComments(username, cb)`
-* `getUserCommentsSince(username, since, cb)`
-* `getUserPolls(username, cb)`
-* `getLastUserPolls(username, cb)`
-* `getUserPollsSince(username, since, cb)`
-* `getUserPosts(username, cb)`
-* `getLastUserPosts(username, cb)`
-* `getUserPostsSince(username, since, cb)`
-* `getUserStories(username, cb)`
-* `getLastUserStories(username, cb)`
-* `getUserStoriesSince(username, since, cb)`
-* `searchComments(query, cb)`
-* `searchLastComments(query, cb)`
-* `searchCommentsSince(query, since, cb)`
-* `searchPolls(query, cb)`
-* `searchLastPolls(query, cb)`
-* `searchPollsSince(query, since, cb)`
-* `searchPosts(query, cb)`
-* `searchLastPosts(query, cb)`
-* `searchPostsSince(query, since, cb)`
-* `searchStories(query, cb)`
-* `searchLastStories(query, cb)`
-* `searchStoriesSince(query, since, cb)`
+These methods take an optional callback function.
 
-### Object and callback
+- ```recent(cb)```
+- ```top(cb)```
 
-* `search(obj, cb)`
-* `searchLast(obj, cb)`
-* `searchSince(obj, since, cb)`
+### Time
+
+These methods take an optional callback function.
+
+- ```before(marker, cb)```
+- ```since(marker, cb)```
+
+The following are valid inputs for the ```marker```
+parameter:
+
+- **'past_24h'**
+- **'past_week'**
+- **'past_month'**
+- **'forever'**
+
+### Search
+
+This method takes an optional callback function.
+
+- ```search(query, cb)```
+
+### Settings
+
+- ```hitsPerPage(n)```
+  - _n must be an integer and 1 <= n <= 1000_
+  - _Default is 1000_
+  - _This setting is persistant from one request another_
+- ```page(n)```
+  - _n must be an integer and 0 <= n_
+
+
+## Non-chainable
+
+By definition these methods are not chainable.
+
+- ```item(id, cb)```
+  - _Get specific item_
+- ```user(username, cb)```
+  - _Get user profile_
+
 
 ## API Notes
 
-Keep in mind that Algolia has a rate limit of 10,000 requests per hour from a 
-single IP. Also, requests have a max of a 1000 hits (results). Given this, 
-```xSince()``` methods only return the first 1000 results. So for example, 
-```getUserPostsSince()``` called with ```past_month``` will return 
-the first 1000 posts within the last month from the user in question, but 
-there could easily be more than that. You can check this via ```nbHits```,
+Keep in mind that Algolia has a rate limit of 10,000 requests per hour from a
+single IP. Also, requests have a max of a 1000 hits (results). By default,
+```hitsPerPage``` is to this max (it is configurable however). So for example,
+```author().comment().since()``` called with ```past_month``` will return
+the first 1000 posts within the last month from the author (user) in question,
+but there could easily be more than that. You can check this via ```nbHits```,
 the total number of hits for the query.
