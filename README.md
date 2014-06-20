@@ -13,7 +13,8 @@ npm install hacker-news-api
 
 Almost all methods are chainable, with flexible ordering. Methods are executed
 (as in HTTP requests are made) once a callback function is passed (not all
-  methods accept a callback). This will always be the last method in the chain.
+  methods accept a callback). Thus, this will always be the last method in the
+chain.
 
 ```js
 var hn = require('hacker-news-api');
@@ -114,5 +115,5 @@ single IP. Also, requests have a max of a 1000 hits (results). By default,
 ```hitsPerPage``` is to this max (it is configurable however). So for example,
 ```author().comment().since()``` called with ```past_month``` will return
 the first 1000 posts within the last month from the author (user) in question,
-but there could easily be more than that. You can check this via ```nbHits```,
-the total number of hits for the query.
+but there could easily be more than that. You can check this via ```nbHits```
+in the returned JSON, the total number of hits for the query.
