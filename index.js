@@ -125,7 +125,6 @@ var hn = function () {
       // In this case, there are no query_args
       query = query + '/' + this.id;
     }
-    console.log(query);
 
     // Reset hn object attributes before request is made
     this.type = TYPE_SEARCH;
