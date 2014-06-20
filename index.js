@@ -3,7 +3,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// REQUIRE 
+// REQUIRE
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ var request = require('request');
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// CONSTANTS                                                           
+// CONSTANTS
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -64,7 +64,7 @@ function numericFilters(caller, marker) {
  * Generate Unix timestamp based on date range marker. Based on Algolia's own
  * hnsearh.js. See repo for more: https://github.com/algolia/hn-search
  */
-function timestamp(range) {
+function timestamp(marker) {
   var now = new Date(); 
   var now_utc = Date.UTC(now.getUTCFullYear(),
                          now.getUTCMonth(),
@@ -73,7 +73,7 @@ function timestamp(range) {
                          now.getUTCMinutes(),
                          now.getUTCSeconds()) / 1000;
   
-  switch (range) {
+  switch (marker) {
     case 'past_24h':
       return (now_utc - (24 * 60 * 60));
     case 'past_week':
@@ -85,7 +85,7 @@ function timestamp(range) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// EXPORT FUNCTIONS                                                           
+// MODULE.EXPORT 
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -156,7 +156,7 @@ module.exports = new hn();
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// PROTOTYPE METHOD CHAINING                                                        
+// PROTOTYPE METHOD CHAINING 
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -223,25 +223,6 @@ FUNCTIONS_TIME.forEach(function (fName) {
 });
 
 
-var FUNCTIONS_SINGLE = ['item','user'];
-FUNCTIONS_SINGLE.forEach(function (fName) {
-  hn.prototype[fName] = function (id, cb) {
-
-    switch (fName) {
-      case 'item':
-        this.type = TYPE_ITEM;
-        break;
-      case 'user':
-        this.type = TYPE_USER;
-        break;
-    }
-
-    this.id = id;
-    this.call(cb);
-  };
-});
-
-
 hn.prototype.search = function (query, cb) {
   this.params.query = query; 
 
@@ -273,3 +254,28 @@ hn.prototype.page = function (n) {
     this.params.page = n;
     return this;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PROTOTYPE NON-CHAINABLE METHODS 
+////////////////////////////////////////////////////////////////////////////////
+
+
+// These are by definition non-chainable
+var FUNCTIONS_SINGLE = ['item','user'];
+FUNCTIONS_SINGLE.forEach(function (fName) {
+  hn.prototype[fName] = function (id, cb) {
+
+    switch (fName) {
+      case 'item':
+        this.type = TYPE_ITEM;
+        break;
+      case 'user':
+        this.type = TYPE_USER;
+        break;
+    }
+
+    this.id = id;
+    this.call(cb);
+  };
+});

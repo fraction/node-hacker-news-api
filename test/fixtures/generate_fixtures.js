@@ -28,8 +28,8 @@ var urls = [
     '/api/v1/search_by_date?hitsPerPage=1&tags=(story%2Cpoll)&query=apple',
     '/api/v1/search?hitsPerPage=1&tags=(story)&query=apple',
     '/api/v1/search_by_date?hitsPerPage=1&tags=(story)&query=apple',
-    '/api/v1/search?hitsPerPage=1&tags=ask_hn&page=2&query=apple',
-    '/api/v1/search_by_date?hitsPerPage=1&tags=ask_hn&page=2&query=apple',
+    '/api/v1/search?hitsPerPage=1&tags=(ask_hn)&page=2&query=apple',
+    '/api/v1/search_by_date?hitsPerPage=1&tags=(ask_hn)&page=2&query=apple'
 ];
 
 async.mapSeries(urls, function(item, next) {

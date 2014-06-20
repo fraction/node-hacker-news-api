@@ -3,7 +3,7 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var nock = require('nock');
 
-hn.setHitsPerPage(1);
+hn.hitsPerPage(1);
 var fixtures = JSON.parse(fs.readFileSync(__dirname + "/fixtures/fixtures.json"));
 
 var api = nock('https://hn.algolia.com').persist();
@@ -138,13 +138,10 @@ describe('hn', function(){
     hn.poll().recent().search('apple', crazy_curry(['poll'], done, verifyDataHasAllOfTags));
   });
 
-  /*
   it('should search', function(done) {
-    hn.search({tags: 'ask_hn', query: 'apple', page: 2}, crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
+    hn.ask_hn().page(2).search('apple', crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
   });
   it('should search last', function(done) {
-    hn.searchLast({tags: 'ask_hn', query: 'apple', page: 2}, crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
+    hn.ask_hn().page(2).recent().search('apple', crazy_curry(['ask_hn'], done, verifyDataHasAllOfTags));
   });
-  */
-
 });
