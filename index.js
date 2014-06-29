@@ -159,24 +159,26 @@ module.exports = new hn();
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var FUNCTIONS_TAG = ['story',
-                     'comment',
-                     'poll',
-                     'pollopt',
-                     'show_hn',
-                     'ask_hn',
-                     'author'];
+var PROPS_TAG = ['story',
+                 'comment',
+                 'poll',
+                 'pollopt',
+                 'show_hn',
+                 'ask_hn'];
+PROPS_TAG.forEach(function (fName) {
+  Object.defineProperty(hn.prototype, fName, {
+    get: function () {
+       this.tags_or.push(fName);
+       return this;
+    }
+  });
+});
+
+
+var FUNCTIONS_TAG = ['story_id','author'];
 FUNCTIONS_TAG.forEach(function (fName) {
   hn.prototype[fName] = function (id) {
-
-    if (arguments.length === 1 && (fName === 'author' || fName === 'story')) {
-      // Have an arg to deal with, either the author (username) or story id
-      this.tags_and.push(fName + '_' + id);
-    }
-    else {
-      this.tags_or.push(fName);
-    }
-
+    this.tags_and.push(fName + '_' + id);
     return this;
   };
 });
@@ -184,52 +186,44 @@ FUNCTIONS_TAG.forEach(function (fName) {
 
 var FUNCTIONS_FILTER = ['top','recent'];
 FUNCTIONS_FILTER.forEach(function (fName) {
-  hn.prototype[fName] = function (cb) {
-    
-    switch (fName) {
-      case 'top':
-        this.type = TYPE_SEARCH;
-        break;
-      case 'recent':
-        this.type = TYPE_SEARCH_BY_DATE;
-        break;
-    }
+  Object.defineProperty(hn.prototype, fName, {
+    get: function () {
+      switch (fName) {
+        case 'top':
+          this.type = TYPE_SEARCH;
+          break;
+        case 'recent':
+          this.type = TYPE_SEARCH_BY_DATE;
+          break;
+      }
 
-    if (arguments.length === 1 && typeof cb === 'function') {
-      // Method chaining has stopped, can execute call
-      this.call(cb);
-    }
-    else {
+      this.tags_or.push(fName);
       return this;
     }
-  };
+  });
 });
 
 
 var FUNCTIONS_TIME = ['since','before'];
 FUNCTIONS_TIME.forEach(function (fName) {
-  hn.prototype[fName] = function (marker, cb) {
+  hn.prototype[fName] = function (marker) {
     this.type = TYPE_SEARCH_BY_DATE;
     this.params.numericFilters = numericFilters(fName, marker);
-
-    if (arguments.length === 2 && typeof cb === 'function') {
-      this.call(cb);
-    }
-    else {
-      return this;
-    }
+    
+    return this;
   };
 });
 
 
-hn.prototype.search = function (query, cb) {
+hn.prototype.search = function (query) {
   this.params.query = query; 
+  return this;
+};
 
-  if (arguments.length === 2 && typeof cb === 'function') {
+
+hn.prototype.execute = function (cb) {
+  if (arguments.length === 1 && typeof cb === 'function') {
     this.call(cb);
-  }
-  else {
-    return this;
   }
 };
 
