@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianbundy/node-hacker-news-api.git"
+    "url": "https://github.com/fraction/node-hacker-news-api.git"
   },
   "keywords": [
     "hacker",
@@ -21,9 +21,9 @@
   "author": "Christian Bundy <me@christianbundy.com> (http://christianbundy.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/christianbundy/node-hacker-news-api/issues"
+    "url": "https://github.com/fraction/node-hacker-news-api/issues"
   },
-  "homepage": "https://github.com/christianbundy/node-hacker-news-api",
+  "homepage": "https://github.com/fraction/node-hacker-news-api",
   "dependencies": {
     "request": "~2.36.0"
   },
