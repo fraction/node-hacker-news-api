@@ -15,10 +15,16 @@
     "news",
     "hackernews",
     "hn",
+    "ycombinator",
+    "yc",
     "algolia",
     "api"
   ],
   "author": "Christian Bundy <me@christianbundy.com> (http://christianbundy.com/)",
+  "contributors": [
+    "euank <euank@euank.com> (https://github.com/euank)",
+    "beltex (https://github.com/beltex)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fraction/node-hacker-news-api/issues"
