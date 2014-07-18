@@ -1,6 +1,7 @@
 # Node.js Hacker News API
 
-A Node.js library for seamless integration with [Algolia's kickass Hacker News API](https://hn.algolia.com/api).
+A Node.js [library](https://www.npmjs.org/package/hacker-news-api) for seamless
+integration with [Algolia's kickass Hacker News API](https://hn.algolia.com/api).
 
 
 ## Installation
