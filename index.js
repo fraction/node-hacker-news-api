@@ -175,10 +175,24 @@ PROPS_TAG.forEach(function (fName) {
 });
 
 
-var FUNCTIONS_TAG = ['story_id','author'];
+var FUNCTIONS_TAG = ['author','id'];
 FUNCTIONS_TAG.forEach(function (fName) {
   hn.prototype[fName] = function (id) {
-    this.tags_and.push(fName + '_' + id);
+    switch (fName) {
+      default:
+        this.tags_and.push(fName + '_' + id);
+        break;
+      case 'id':
+        // By id, we mean story_id
+        // Usage: story.id(id)
+        this.tags_and.push('story' + '_' + id);
+ 
+        // Get rid of 'story' in or tags, not needed
+        var index = this.tags_or.indexOf('story');
+        if (index > -1) { this.tags_or.splice(index, 1); }
+        break;
+    }
+
     return this;
   };
 });
