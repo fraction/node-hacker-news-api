@@ -26,7 +26,7 @@
     "Christian Bundy <me@christianbundy.com> (https://github.com/christianbundy)",
     "euank <euank@euank.com> (https://github.com/euank)"
   ],
-  "license": "MIT",
+  "license": "Fraction",
   "bugs": {
     "url": "https://github.com/fraction/node-hacker-news-api/issues"
   },
