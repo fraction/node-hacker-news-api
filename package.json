@@ -32,11 +32,12 @@
   },
   "homepage": "https://github.com/fraction/node-hacker-news-api",
   "dependencies": {
-    "request": "~2.36.0"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "chai": "*",
+    "mocha": "*",
     "nock": "*",
-    "mocha": "*"
+    "standard": "^14.3.1"
   }
 }
